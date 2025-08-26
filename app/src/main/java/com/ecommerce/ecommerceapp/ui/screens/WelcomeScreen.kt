@@ -18,8 +18,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -52,6 +54,11 @@ fun WelcomeScreen(
     onNavigateToProfile: () -> Unit,
     onNavigateToUserManagement: () -> Unit,
     onNavigateToLocationManagement: () -> Unit,
+
+    // Parametros Para Category and Products :
+    onNavigateToCategoryManagement: () -> Unit,
+    onNavigateToProductManagement: () -> Unit,
+
     viewModel: WelcomeViewModel = viewModel { WelcomeViewModel(sessionManager) }
 ) {
     Box(
@@ -203,7 +210,28 @@ fun WelcomeScreen(
                     onClick = onNavigateToLocationManagement
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Gestión de Categorías
+                ActionButton(
+                    text = "Gestión de Categorías",
+                    icon = Icons.Default.List,
+                    description = "Crear, editar y eliminar categorías de productos",
+                    onClick = onNavigateToCategoryManagement
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Gestión de Productos
+                ActionButton(
+                    text = "Gestión de Productos",
+                    icon = Icons.Default.ShoppingCart,
+                    description = "Administrar productos, precios, stock e imágenes",
+                    onClick = onNavigateToProductManagement
+                )
+
                 Spacer(modifier = Modifier.height(32.dp))
+
             }
 
             // Botón Cerrar Sesión

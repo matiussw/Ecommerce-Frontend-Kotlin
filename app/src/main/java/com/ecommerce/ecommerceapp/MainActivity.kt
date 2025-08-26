@@ -16,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ecommerce.ecommerceapp.models.AuthResponse
+import com.ecommerce.ecommerceapp.ui.screens.CategoryManagementScreen
 import com.ecommerce.ecommerceapp.ui.screens.LocationManagementScreen
 import com.ecommerce.ecommerceapp.ui.screens.LoginScreen
+import com.ecommerce.ecommerceapp.ui.screens.ProductManagementScreen
 import com.ecommerce.ecommerceapp.ui.screens.ProfileScreen
 import com.ecommerce.ecommerceapp.ui.screens.RegisterScreen
 import com.ecommerce.ecommerceapp.ui.screens.UserManagementScreen
@@ -131,6 +133,12 @@ fun EcommerceApp(
                 },
                 onNavigateToLocationManagement = {
                     navController.navigate("location_management")
+                },
+                onNavigateToCategoryManagement = {
+                    navController.navigate("category_management")
+                },
+                onNavigateToProductManagement = {
+                    navController.navigate("product_management")
                 }
             )
         }
@@ -163,5 +171,27 @@ fun EcommerceApp(
                 }
             )
         }
+        // Pantalla de Gestión de Categorías (Solo Admin)
+        composable("category_management") {
+            CategoryManagementScreen(
+                sessionManager = sessionManager,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+// Pantalla de Gestión de Productos (Solo Admin)
+        composable("product_management") {
+            ProductManagementScreen(
+                sessionManager = sessionManager,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
+
+
+

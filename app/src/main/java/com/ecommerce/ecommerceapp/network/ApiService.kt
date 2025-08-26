@@ -78,4 +78,103 @@ interface ApiService {
 
     @GET("api/auth/roles")
     suspend fun getRoles(): Response<List<Role>>
+
+
+    // ========== GESTIÓN DE CATEGORÍAS ==========
+    @GET("api/categories/")
+    suspend fun getCategories(
+        @Query("include_products") includeProducts: Boolean = false
+    ): Response<List<Category>>
+
+    @GET("api/categories/{id}")
+    suspend fun getCategory(
+        @Path("id") id: Int,
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 10
+    ): Response<Category>
+
+    @POST("api/categories/")
+    suspend fun createCategory(
+        @Header("Authorization") token: String,
+        @Body category: CreateCategoryRequest
+    ): Response<Category>
+
+    @PUT("api/categories/{id}")
+    suspend fun updateCategory(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body category: UpdateCategoryRequest
+    ): Response<Category>
+
+    @DELETE("api/categories/{id}")
+    suspend fun deleteCategory(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<AuthResponse>
+
+    @GET("api/categories/stats")
+    suspend fun getCategoriesStats(): Response<Any>
+
+    // ========== GESTIÓN DE PRODUCTOS ==========
+    @GET("api/products/")
+    suspend fun getProducts(
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 10,
+        @Query("search") search: String? = null,
+        @Query("category_id") categoryId: Int? = null,
+        @Query("min_price") minPrice: Double? = null,
+        @Query("max_price") maxPrice: Double? = null,
+        @Query("in_stock") inStock: Boolean? = null
+    ): Response<ProductsResponse>
+
+    @GET("api/products/{id}")
+    suspend fun getProduct(@Path("id") id: Int): Response<Product>
+
+    @POST("api/products/")
+    suspend fun createProduct(
+        @Header("Authorization") token: String,
+        @Body product: CreateProductRequest
+    ): Response<Product>
+
+    @PUT("api/products/{id}")
+    suspend fun updateProduct(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body product: UpdateProductRequest
+    ): Response<Product>
+
+    @PUT("api/products/{id}/stock")
+    suspend fun updateProductStock(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body stock: UpdateStockRequest
+    ): Response<Product>
+
+    @DELETE("api/products/{id}")
+    suspend fun deleteProduct(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<AuthResponse>
+
+    @GET("api/products/search")
+    suspend fun searchProducts(@Query("q") query: String): Response<List<Product>>
+
+    @GET("api/products/featured")
+    suspend fun getFeaturedProducts(): Response<List<Product>>
+
+    // ========== GESTIÓN DE IMÁGENES DE PRODUCTOS ==========
+    @POST("api/products/{id}/images")
+    suspend fun addProductImage(
+        @Header("Authorization") token: String,
+        @Path("id") productId: Int,
+        @Body image: AddImageRequest
+    ): Response<ProductImage>
+
+    @DELETE("api/products/{productId}/images/{imageId}")
+    suspend fun deleteProductImage(
+        @Header("Authorization") token: String,
+        @Path("productId") productId: Int,
+        @Path("imageId") imageId: Int
+    ): Response<AuthResponse>
+
 }
