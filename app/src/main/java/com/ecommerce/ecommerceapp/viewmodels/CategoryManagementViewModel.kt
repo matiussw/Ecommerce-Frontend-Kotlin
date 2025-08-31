@@ -43,7 +43,8 @@ class CategoryManagementViewModel(private val sessionManager: SessionManager) : 
             try {
                 val response = ApiClient.apiService.getCategories(includeProducts = false)
                 if (response.isSuccessful && response.body() != null) {
-                    categories = response.body()!!
+                    val categoriesResponse = response.body()!!
+                    categories = categoriesResponse.categories
                     Log.d("CATEGORY_DEBUG", "Categorías cargadas: ${categories.size}")
                 } else {
                     errorMessage = "Error al cargar categorías"

@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 
 @Parcelize
 data class CartItem(
-    @SerializedName("id_cart_item")
-    val id_cart_item: Int = 0,
+    @SerializedName("id_TemporalSales")
+    val id_cart_item: Int = 0,  // Mapear id_TemporalSales a id_cart_item
 
     @SerializedName("id_Product")
     val id_Product: Int = 0,
@@ -19,18 +19,28 @@ data class CartItem(
     val product: Product? = null,
 
     @SerializedName("subtotal")
-    val subtotal: Double = 0.0
+    val subtotal: Double = 0.0,
+
+    // Campos adicionales que devuelve la API
+    @SerializedName("DateAdded")
+    val DateAdded: String? = null,
+
+    @SerializedName("iD_User")
+    val iD_User: Int = 0,
+
+    @SerializedName("id_Sale")
+    val id_Sale: Int? = null
 ) : Parcelable
 
 @Parcelize
 data class Cart(
-    @SerializedName("items")
+    @SerializedName("cart_items")
     val items: List<CartItem> = emptyList(),
 
-    @SerializedName("total_items")
+    @SerializedName("count")
     val total_items: Int = 0,
 
-    @SerializedName("total_amount")
+    @SerializedName("total")
     val total_amount: Double = 0.0,
 
     @SerializedName("message")

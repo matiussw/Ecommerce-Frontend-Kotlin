@@ -94,8 +94,11 @@ class ProductCatalogViewModel : ViewModel() {
             try {
                 val response = ApiClient.apiService.getCategories(includeProducts = false)
                 if (response.isSuccessful && response.body() != null) {
-                    categories = response.body()!!
+                     val categoriesResponse = response.body()!!
+                    categories = categoriesResponse.categories
                     Log.d("CATALOG_DEBUG", "Categorías cargadas: ${categories.size}")
+                } else {
+                    Log.e("CATALOG_DEBUG", "Error loading categories: ${response.code()}")
                 }
             } catch (e: Exception) {
                 Log.e("CATALOG_DEBUG", "Exception loading categories", e)
@@ -111,8 +114,11 @@ class ProductCatalogViewModel : ViewModel() {
             try {
                 val response = ApiClient.apiService.getFeaturedProducts()
                 if (response.isSuccessful && response.body() != null) {
-                    featuredProducts = response.body()!!.take(6) // Solo los primeros 6
+                    val productsResponse = response.body()!!
+                    featuredProducts = productsResponse.products.take(6) // Solo los primeros 6
                     Log.d("CATALOG_DEBUG", "Productos destacados: ${featuredProducts.size}")
+                } else {
+                    Log.e("CATALOG_DEBUG", "Error loading featured products: ${response.code()}")
                 }
             } catch (e: Exception) {
                 Log.e("CATALOG_DEBUG", "Exception loading featured products", e)

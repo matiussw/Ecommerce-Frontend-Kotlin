@@ -102,17 +102,22 @@ class ProductManagementViewModel(private val sessionManager: SessionManager) : V
         }
     }
 
-    private fun loadCategories() {
+    fun loadCategories() {
         isLoadingCategories = true
         viewModelScope.launch {
             try {
                 val response = ApiClient.apiService.getCategories(includeProducts = false)
                 if (response.isSuccessful && response.body() != null) {
-                    categories = response.body()!!
-                    Log.d("PRODUCT_DEBUG", "Categorías cargadas: ${categories.size}")
+                   val categoriesResponse = response.body()!!
+                    categories = categoriesResponse.categories
+                    Log.d("CATEGORY_DEBUG", "Categorías cargadas: ${categories.size}")
+                } else {
+                    errorMessage = "Error al cargar categorías"
+                    Log.e("CATEGORY_DEBUG", "Error response: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e("PRODUCT_DEBUG", "Exception loading categories", e)
+                errorMessage = "Error de conexión: ${e.message}"
+                Log.e("CATEGORY_DEBUG", "Exception loading categories", e)
             } finally {
                 isLoadingCategories = false
             }

@@ -84,7 +84,7 @@ interface ApiService {
     @GET("api/categories/")
     suspend fun getCategories(
         @Query("include_products") includeProducts: Boolean = false
-    ): Response<List<Category>>
+    ): Response<CategoriesResponse>
 
     @GET("api/categories/{id}")
     suspend fun getCategory(
@@ -160,7 +160,7 @@ interface ApiService {
     suspend fun searchProducts(@Query("q") query: String): Response<List<Product>>
 
     @GET("api/products/featured")
-    suspend fun getFeaturedProducts(): Response<List<Product>>
+    suspend fun getFeaturedProducts(): Response<ProductsResponse>
 
     // ========== GESTIÓN DE IMÁGENES DE PRODUCTOS ==========
     @POST("api/products/{id}/images")
