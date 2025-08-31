@@ -22,6 +22,10 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Storefront
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -54,11 +58,12 @@ fun WelcomeScreen(
     onNavigateToProfile: () -> Unit,
     onNavigateToUserManagement: () -> Unit,
     onNavigateToLocationManagement: () -> Unit,
-
-    // Parametros Para Category and Products :
     onNavigateToCategoryManagement: () -> Unit,
     onNavigateToProductManagement: () -> Unit,
-
+    onNavigateToCatalog: () -> Unit,
+    onNavigateToCart: () -> Unit,
+    onNavigateToSalesHistory: () -> Unit, // Nueva función para historial de ventas
+    cartViewModel: com.ecommerce.ecommerceapp.viewmodels.CartViewModel? = null,
     viewModel: WelcomeViewModel = viewModel { WelcomeViewModel(sessionManager) }
 ) {
     Box(
@@ -112,6 +117,16 @@ fun WelcomeScreen(
                 textAlign = TextAlign.Center
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Historial de Pedidos
+            ActionButton(
+                text = "Historial de Pedidos",
+                icon = Icons.Default.Assignment, // Cambiado de Receipt a Assignment
+                description = "Ver todos tus pedidos anteriores y detalles",
+                onClick = onNavigateToSalesHistory
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Tipo de usuario
@@ -160,9 +175,161 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Opciones disponibles para todos los usuarios
+            // Opciones principales para todos los usuarios
             Text(
-                text = "Opciones Disponibles",
+                text = "🛍️ Tienda Online",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Catálogo de Productos - DESTACADO
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Button(
+                    onClick = onNavigateToCatalog,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    elevation = null
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Storefront,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Ver Catálogo de Productos",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Text(
+                                text = "Explora todos los productos disponibles, busca y filtra por categorías",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Sección del carrito para usuarios logueados
+            Text(
+                text = "🛒 Mi Carrito",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Mi Carrito con badge
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Button(
+                    onClick = onNavigateToCart,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    elevation = null
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        BadgedBox(
+                            badge = {
+                                val itemCount = cartViewModel?.getCartItemCount() ?: 0
+                                if (itemCount > 0) {
+                                    Badge {
+                                        Text(itemCount.toString())
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            val itemCount = cartViewModel?.getCartItemCount() ?: 0
+                            val cartTotal = cartViewModel?.getCartTotal() ?: 0.0
+
+                            Text(
+                                text = if (itemCount > 0) "Mi Carrito ($itemCount items)" else "Mi Carrito",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Text(
+                                text = if (itemCount > 0) {
+                                    "Total: ${String.format("%.2f", cartTotal)}"
+                                } else {
+                                    "Carrito vacío - Agrega productos desde el catálogo"
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (itemCount > 0)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    TextSecondary
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Opciones de cuenta
+            Text(
+                text = "👤 Mi Cuenta",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
@@ -178,12 +345,12 @@ fun WelcomeScreen(
                 onClick = onNavigateToProfile
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Opciones solo para administradores
             if (viewModel.isAdmin) {
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Text(
-                    text = "Panel de Administración",
+                    text = "⚙️ Panel de Administración",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFFF9800),
@@ -230,8 +397,7 @@ fun WelcomeScreen(
                     onClick = onNavigateToProductManagement
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
-
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
             // Botón Cerrar Sesión

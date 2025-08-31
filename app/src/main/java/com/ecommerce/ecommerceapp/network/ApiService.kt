@@ -177,4 +177,50 @@ interface ApiService {
         @Path("imageId") imageId: Int
     ): Response<AuthResponse>
 
+    // ========== CARRITO DE COMPRAS ==========
+    @GET("api/sales/cart")
+    suspend fun getCart(@Header("Authorization") token: String): Response<Cart>
+
+    @POST("api/sales/cart/add")
+    suspend fun addToCart(
+        @Header("Authorization") token: String,
+        @Body item: AddToCartRequest
+    ): Response<Cart>
+
+    @PUT("api/sales/cart/update/{id}")
+    suspend fun updateCartItem(
+        @Header("Authorization") token: String,
+        @Path("id") itemId: Int,
+        @Body quantity: UpdateCartQuantityRequest
+    ): Response<Cart>
+
+    @DELETE("api/sales/cart/remove/{id}")
+    suspend fun removeFromCart(
+        @Header("Authorization") token: String,
+        @Path("id") itemId: Int
+    ): Response<AuthResponse>
+
+    @DELETE("api/sales/cart/clear")
+    suspend fun clearCart(@Header("Authorization") token: String): Response<AuthResponse>
+
+    // ========== CHECKOUT Y VENTAS ==========
+    @POST("api/sales/checkout")
+    suspend fun checkout(
+        @Header("Authorization") token: String,
+        @Body checkoutData: CheckoutRequest
+    ): Response<CheckoutResponse>
+
+    @GET("api/sales/")
+    suspend fun getUserSales(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 10
+    ): Response<SalesResponse>
+
+    @GET("api/sales/{id}")
+    suspend fun getSale(
+        @Header("Authorization") token: String,
+        @Path("id") saleId: Int
+    ): Response<Sale>
+
 }
